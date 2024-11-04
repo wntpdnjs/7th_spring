@@ -1,0 +1,117 @@
+1.
+@Repository
+public class MemberMissionRepository {
+
+    private final JPAQueryFactory queryFactory;
+
+    public MemberMissionRepository(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
+
+    public List<MissionDTO> findMissionsByMemberId(Long memberId) {
+        QMemberMission memberMission = QMemberMission.memberMission;
+        QMission mission = QMission.mission;
+        QStore store = QStore.store;
+
+        return queryFactory
+                .select(Projections.constructor(MissionDTO.class,
+                        memberMission.status,
+                        mission.reward,
+                        store.name,
+                        mission.missionSpec))
+                .from(memberMission)
+                .join(memberMission.mission, mission)
+                .join(mission.store, store)
+                .where(memberMission.member.id.eq(memberId))
+                .fetch();
+    }
+}
+2.
+@Repository
+public class ReviewRepository {
+
+    private final JPAQueryFactory queryFactory;
+
+    public ReviewRepository(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
+
+    public List<ReviewDTO> findAllReviews() {
+        QReview review = QReview.review;
+        QMember member = QMember.member;
+        QStore store = QStore.store;
+
+        return queryFactory
+                .select(Projections.constructor(ReviewDTO.class,
+                        review.id.as("reviewId"),
+                        member.name.as("memberName"),
+                        store.name.as("storeName"),
+                        review.body.as("reviewBody"),
+                        review.score.as("reviewScore"),
+                        review.createdAt.as("reviewCreatedAt")))
+                .from(review)
+                .join(review.member, member)
+                .join(review.store, store)
+                .orderBy(review.createdAt.asc())
+                .fetch();
+    }
+}
+3.
+@Repository
+public class MemberMissionRepository {
+
+    private final JPAQueryFactory queryFactory;
+
+    public MemberMissionRepository(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
+
+    public List<MemberMissionDTO> findMemberMissionDetails(Long memberId) {
+        QMemberMission memberMission = QMemberMission.memberMission;
+        QMission mission = QMission.mission;
+        QStore store = QStore.store;
+        QMember member = QMember.member;
+
+        return queryFactory
+                .select(Projections.constructor(MemberMissionDTO.class,
+                        member.name.as("memberName"),
+                        member.point.as("memberPoint"),
+                        Expressions.asNumber(
+                            memberMission.status.eq("성공").count()).as("successfulMissionCount"),
+                        mission.deadline.as("missionDeadline"),
+                        mission.reward.as("missionReward"),
+                        store.name.as("storeName"),
+                        mission.missionSpec.as("missionSpec")))
+                .from(memberMission)
+                .join(memberMission.mission, mission)
+                .join(mission.store, store)
+                .join(memberMission.member, member)
+                .where(memberMission.member.id.eq(memberId))
+                .groupBy(member.name, member.point, mission.deadline, mission.reward, store.name, mission.missionSpec)
+                .fetch();
+    }
+}
+4.
+@Repository
+public class MemberRepository {
+
+    private final JPAQueryFactory queryFactory;
+
+    public MemberRepository(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
+
+    public MemberDTO findMemberInfoById(Long memberId) {
+        QMember member = QMember.member;
+
+        return queryFactory
+                .select(Projections.constructor(MemberDTO.class,
+                        member.name.as("memberName"),
+                        member.email.as("memberEmail"),
+                        member.specAddress.as("phoneNumber"),  // specAddress를 phoneNumber로 매핑
+                        member.point.as("memberPoint")))
+                .from(member)
+                .where(member.id.eq(memberId))
+                .fetchOne();
+    }
+}
