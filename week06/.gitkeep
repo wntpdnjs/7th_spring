@@ -115,3 +115,6 @@ public class MemberRepository {
                 .fetchOne();
     }
 }
+
+워크북은 7주차 미션에 포함해서 같이 제출하였습니다 !!
+깃허브링크 :https://github.com/wntpdnjs/mission5.git
