@@ -1,0 +1,15 @@
+Java의 Exception 종류들
+Checked Exception: 컴파일 시점에 처리해야 하는 예외. 반드시 예외 처리가 필요함. 예: IOException, SQLException.
+Unchecked Exception: 런타임 시점에 발생하는 예외로, 예외 처리를 강제하지 않음. 예: NullPointerException, ArrayIndexOutOfBoundsException.
+Error: 시스템 레벨에서 발생하는 심각한 문제로, 예외 처리로 해결할 수 없는 것들. 예: OutOfMemoryError, StackOverflowError.
+
+
+@Valid
+정의: @Valid는 Java Bean Validation API에서 객체의 유효성을 검증하는 데 사용되는 어노테이션으로, Spring MVC나 Spring Boot에서 많이 사용됨.
+속성: 모델 객체 내 각 필드에 대해 유효성 검사를 정의한 어노테이션들(@NotNull, @Size, @Min 등)을 트리거함.
+장점:
+코드 가독성을 높이고, 유효성 검사를 객체 모델에서 직접 수행할 수 있음.
+오류 발생 시 자동으로 예외 처리가 가능해 개발 시간을 단축함.
+단점:
+주로 간단한 데이터 유효성 검사에 적합하며, 복잡한 로직이나 조건 검사는 처리하기 어려움.
+잘못된 설정 시, 예외가 발생해 전체 흐름을 방해할 수 있음.
